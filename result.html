@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SBTI-Pro | 检测结果</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #ecfdf5;
+        --surface: rgba(255, 255, 255, 0.84);
+        --surface-strong: #ffffff;
+        --line: rgba(6, 78, 59, 0.12);
+        --line-strong: rgba(6, 78, 59, 0.24);
+        --text: #064e3b;
+        --muted: #55786d;
+        --primary: #059669;
+        --primary-strong: #047857;
+        --accent: #fbbf24;
+        --accent-soft: #fef3c7;
+        --shadow: 0 24px 60px rgba(5, 150, 105, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 32px 18px;
+        color: var(--text);
+        font-family: "Noto Sans SC", sans-serif;
+        background:
+          radial-gradient(circle at top right, rgba(16, 185, 129, 0.2), transparent 24%),
+          radial-gradient(circle at 18% 12%, rgba(251, 191, 36, 0.18), transparent 18%),
+          linear-gradient(180deg, #fbfffd 0%, var(--bg) 48%, #e6f7ee 100%);
+      }
+
+      .layout {
+        width: min(1120px, 100%);
+        margin: 0 auto;
+        min-height: calc(100vh - 64px);
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(320px, 420px);
+        gap: 28px;
+        align-items: center;
+      }
+
+      .summary {
+        padding: 16px 4px;
+        animation: pop 420ms ease-out both;
+      }
+
+      .summary-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(5, 150, 105, 0.12);
+        background: rgba(255, 255, 255, 0.68);
+        font-weight: 700;
+        font-size: 0.92rem;
+      }
+
+      .summary-tag::before {
+        content: "";
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+      }
+
+      .summary h1 {
+        margin: 18px 0 14px;
+        font-family: "Outfit", "Noto Sans SC", sans-serif;
+        font-size: clamp(2.3rem, 6vw, 4.6rem);
+        line-height: 1.04;
+        letter-spacing: -0.035em;
+        max-width: 11ch;
+      }
+
+      .summary p {
+        margin: 0;
+        max-width: 54ch;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .metric {
+        padding: 16px 18px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(6, 78, 59, 0.1);
+      }
+
+      .metric strong {
+        display: block;
+        margin-bottom: 8px;
+        font-family: "Outfit", "Noto Sans SC", sans-serif;
+        font-size: 1.12rem;
+      }
+
+      .metric span {
+        color: var(--muted);
+        font-size: 0.94rem;
+        line-height: 1.65;
+      }
+
+      .card {
+        background: var(--surface);
+        border-radius: 28px;
+        border: 1px solid var(--line);
+        padding: 30px 26px 24px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+        animation: pop 520ms ease-out both;
+      }
+
+      .tag {
+        margin: 0 0 12px;
+        color: var(--primary);
+        font-family: "Outfit", "Noto Sans SC", sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+      }
+
+      .result-title {
+        margin: 0 0 12px;
+        font-family: "Outfit", "Noto Sans SC", sans-serif;
+        line-height: 1.14;
+        letter-spacing: -0.02em;
+        font-size: clamp(1.6rem, 3vw, 2.4rem);
+      }
+
+      .name {
+        color: var(--primary-strong);
+      }
+
+      .desc {
+        margin: 0 0 18px;
+        font-size: 1.05rem;
+        line-height: 1.8;
+      }
+
+      .meta {
+        margin: 0 0 22px;
+        color: var(--muted);
+      }
+
+      .insight {
+        margin: 0 0 22px;
+        padding: 18px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(251, 191, 36, 0.14));
+        border: 1px solid rgba(5, 150, 105, 0.12);
+      }
+
+      .insight strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.96rem;
+      }
+
+      .insight p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: #052e25;
+        background: linear-gradient(135deg, var(--accent), #fde68a);
+        border-radius: 999px;
+        padding: 12px 18px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+        box-shadow: 0 18px 28px rgba(251, 191, 36, 0.26);
+      }
+
+      .back:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.02);
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 22px;
+      }
+
+      .chip {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: var(--surface-strong);
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      @keyframes pop {
+        from {
+          opacity: 0;
+          transform: scale(0.97) translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      @media (max-width: 920px) {
+        .layout {
+          grid-template-columns: 1fr;
+          gap: 18px;
+          min-height: auto;
+        }
+
+        .summary h1 {
+          max-width: none;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <section class="summary" aria-label="结果概览">
+        <span class="summary-tag">SBTI-Pro 测试结果</span>
+        <h1>你的专属结果已经生成。</h1>
+        <p>这里会展示本次测试的核心结论和补充说明，你也可以随时返回首页重新测试。</p>
+        <div class="grid">
+          <div class="metric">
+            <strong>主结论</strong>
+            <span>先快速看到本次测试给出的核心判断。</span>
+          </div>
+          <div class="metric">
+            <strong>补充说明</strong>
+            <span>用更轻松的方式解释这条结果想表达的感觉。</span>
+          </div>
+          <div class="metric">
+            <strong>重新测试</strong>
+            <span>如果想换个名字或年龄，随时回到首页再来一次。</span>
+          </div>
+        </div>
+      </section>
+
+      <main class="card" id="result-card">
+        <p class="tag">SBTI-PRO RESULT</p>
+        <h2 class="result-title"><span class="name" id="name"></span>，你的结果出来了</h2>
+        <div class="chips">
+          <span class="chip">娱乐向测试</span>
+          <span class="chip">即时生成结果</span>
+          <span class="chip" id="age-chip">等待补充年龄</span>
+        </div>
+        <p class="desc" id="description"></p>
+        <div class="insight">
+          <strong>结果解读</strong>
+          <p id="insight-text">这是一个偏调侃风格的小结论，请轻松阅读，不必当作真实人格分析。</p>
+        </div>
+        <p class="meta" id="meta"></p>
+        <a class="back" href="./index.html">返回首页重测</a>
+      </main>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const name = (params.get("name") || "").trim();
+      const age = (params.get("age") || "").trim();
+
+      const nameEl = document.getElementById("name");
+      const descriptionEl = document.getElementById("description");
+      const metaEl = document.getElementById("meta");
+      const ageChipEl = document.getElementById("age-chip");
+      const insightTextEl = document.getElementById("insight-text");
+
+      if (!name) {
+        nameEl.textContent = "信息不完整";
+        descriptionEl.textContent = "没有检测到你的名字，请返回首页填写后再开始测试。";
+        insightTextEl.textContent = "先回到首页补全信息，再重新进入结果页查看完整内容。";
+        metaEl.textContent = "";
+        ageChipEl.textContent = "缺少年龄信息";
+      } else {
+        nameEl.textContent = name;
+        descriptionEl.textContent =
+          "看起来你有点没有主见，总在等待被定义。SBTI-Pro 鉴定：纯纯的随波逐流型。";
+        insightTextEl.textContent =
+          "你的结果更像那种先观察、再跟着氛围走的人，习惯看清周围反应之后再表达自己的立场。";
+        metaEl.textContent = age ? "登记年龄：" + age + " 岁（仅用于展示）" : "未填写年龄，结果仍可正常查看。";
+        ageChipEl.textContent = age ? "年龄 " + age + " 岁" : "未填写年龄";
+      }
+    </script>
+  </body>
+</html>

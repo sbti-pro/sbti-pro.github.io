@@ -1,1 +1,366 @@
-hello world
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SBTI-Pro | 人格检测入口</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #ecfdf5;
+        --surface: rgba(255, 255, 255, 0.82);
+        --surface-strong: #ffffff;
+        --line: rgba(6, 78, 59, 0.14);
+        --line-strong: rgba(6, 78, 59, 0.26);
+        --text: #064e3b;
+        --muted: #4b6b61;
+        --primary: #059669;
+        --primary-strong: #047857;
+        --accent: #fbbf24;
+        --danger: #b91c1c;
+        --shadow: 0 24px 60px rgba(5, 150, 105, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Noto Sans SC", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(16, 185, 129, 0.16), transparent 32%),
+          radial-gradient(circle at 85% 16%, rgba(251, 191, 36, 0.2), transparent 22%),
+          linear-gradient(180deg, #f8fffb 0%, var(--bg) 48%, #e6f7ee 100%);
+        padding: 32px 18px;
+      }
+
+      .shell {
+        width: min(1120px, 100%);
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 460px);
+        gap: 28px;
+        align-items: center;
+        min-height: calc(100vh - 64px);
+      }
+
+      .hero {
+        padding: 18px 4px;
+        animation: rise-in 550ms ease-out both;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(5, 150, 105, 0.14);
+        font-size: 0.92rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+      }
+
+      h1 {
+        margin: 18px 0 14px;
+        font-family: "Outfit", "Noto Sans SC", sans-serif;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+        font-size: clamp(2.4rem, 7vw, 4.9rem);
+        max-width: 10ch;
+      }
+
+      .lead {
+        margin: 0;
+        max-width: 54ch;
+        color: var(--muted);
+        font-size: clamp(1rem, 2vw, 1.08rem);
+        line-height: 1.8;
+      }
+
+      .highlights {
+        margin: 28px 0 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .highlights li {
+        padding: 16px 18px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.56);
+        border: 1px solid rgba(6, 78, 59, 0.1);
+        backdrop-filter: blur(14px);
+      }
+
+      .highlights strong {
+        display: block;
+        margin-bottom: 6px;
+        font-family: "Outfit", "Noto Sans SC", sans-serif;
+        font-size: 1.2rem;
+      }
+
+      .highlights span {
+        color: var(--muted);
+        font-size: 0.94rem;
+        line-height: 1.6;
+      }
+
+      .panel {
+        position: relative;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        padding: 30px 26px 24px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+        animation: rise-in 650ms ease-out both;
+      }
+
+      .panel::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(16, 185, 129, 0.08));
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+      }
+
+      .panel h2 {
+        margin: 0;
+        font-family: "Outfit", "Noto Sans SC", sans-serif;
+        font-size: 1.75rem;
+        letter-spacing: -0.02em;
+      }
+
+      .panel-intro {
+        margin: 10px 0 24px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .field {
+        margin-bottom: 16px;
+      }
+
+      label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 8px;
+        font-size: 0.96rem;
+      }
+
+      input {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        font-size: 1rem;
+        padding: 14px 14px;
+        font: inherit;
+        color: var(--text);
+        background: var(--surface-strong);
+        transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+      }
+
+      input::placeholder {
+        color: #8aa39a;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: rgba(5, 150, 105, 0.45);
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.14);
+        transform: translateY(-1px);
+      }
+
+      button {
+        width: 100%;
+        border: 0;
+        border-radius: 999px;
+        padding: 14px 18px;
+        font: inherit;
+        font-weight: 700;
+        font-size: 1rem;
+        color: #052e25;
+        background: linear-gradient(135deg, var(--accent), #fde68a);
+        cursor: pointer;
+        transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+        box-shadow: 0 18px 30px rgba(251, 191, 36, 0.28);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.02);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      .tips {
+        margin-top: 12px;
+        min-height: 1.4em;
+        color: var(--danger);
+        font-size: 0.94rem;
+        font-weight: 700;
+      }
+
+      .note {
+        margin-top: 18px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(6, 78, 59, 0.1);
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.7;
+      }
+
+      .note strong {
+        color: var(--text);
+      }
+
+      @keyframes rise-in {
+        from {
+          opacity: 0;
+          transform: translateY(12px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @media (max-width: 920px) {
+        .shell {
+          grid-template-columns: 1fr;
+          gap: 18px;
+          min-height: auto;
+        }
+
+        .hero {
+          padding-top: 0;
+        }
+
+        h1 {
+          max-width: none;
+        }
+
+        .highlights {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <section class="hero" aria-label="页面介绍">
+        <span class="eyebrow">SBTI-Pro 快速测试</span>
+        <h1>输入信息，马上查看你的测试结果。</h1>
+        <p class="lead">
+          这是一个轻松的娱乐向测试页面。填写名字和年龄后，就能进入结果页查看属于你的专属结论。
+        </p>
+        <ul class="highlights">
+          <li>
+            <strong>30 秒</strong>
+            <span>只需填写基础信息，就能快速进入结果页。</span>
+          </li>
+          <li>
+            <strong>即时生成</strong>
+            <span>提交后立即查看结果，不需要等待。</span>
+          </li>
+          <li>
+            <strong>轻松体验</strong>
+            <span>页面简洁直接，手机和电脑上都能顺畅使用。</span>
+          </li>
+        </ul>
+      </section>
+
+      <main class="panel">
+        <h2>开始测试</h2>
+        <p class="panel-intro">先填写下面的信息，接着就可以进入结果页查看本次测试结论。</p>
+        <form id="test-form" novalidate>
+          <div class="field">
+            <label for="name">你的名字</label>
+            <input id="name" name="name" type="text" placeholder="例如：小明" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="age">你的年龄</label>
+            <input
+              id="age"
+              name="age"
+              type="number"
+              min="1"
+              max="120"
+              placeholder="例如：23"
+              inputmode="numeric"
+            />
+          </div>
+          <button type="submit">开始测试</button>
+          <div id="tips" class="tips" role="status" aria-live="polite"></div>
+        </form>
+        <p class="note"><strong>说明：</strong>你的姓名和年龄只会用于当前页面展示，不会被额外保存。</p>
+      </main>
+    </div>
+
+    <script>
+      const form = document.getElementById("test-form");
+      const nameInput = document.getElementById("name");
+      const ageInput = document.getElementById("age");
+      const tips = document.getElementById("tips");
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const name = nameInput.value.trim();
+        const age = ageInput.value.trim();
+
+        if (!name) {
+          tips.textContent = "请先输入你的名字。";
+          nameInput.focus();
+          return;
+        }
+
+        if (!age || Number.isNaN(Number(age))) {
+          tips.textContent = "请输入有效的年龄数字。";
+          ageInput.focus();
+          return;
+        }
+
+        const params = new URLSearchParams({ name, age });
+        window.location.href = "./result.html?" + params.toString();
+      });
+    </script>
+  </body>
+</html>
