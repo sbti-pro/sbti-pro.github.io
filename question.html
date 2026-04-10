@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SBTI-Pro | 人格检测入口</title>
+    <title>SBTI-Pro | 灵魂拷问</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -163,83 +163,57 @@
         line-height: 1.7;
       }
 
-      .field {
-        margin-bottom: 16px;
-      }
-
-      label {
-        display: block;
+      .question {
+        margin: 0 0 28px;
+        font-size: 1.15rem;
         font-weight: 700;
-        margin-bottom: 8px;
-        font-size: 0.96rem;
-      }
-
-      input {
-        width: 100%;
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        font-size: 1rem;
-        padding: 14px 14px;
-        font: inherit;
+        line-height: 1.6;
         color: var(--text);
-        background: var(--surface-strong);
-        transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
       }
 
-      input::placeholder {
-        color: #8aa39a;
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
       }
 
-      input:focus {
-        outline: none;
-        border-color: rgba(5, 150, 105, 0.45);
-        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.14);
-        transform: translateY(-1px);
-      }
-
-      button {
+      .option-btn {
         width: 100%;
-        border: 0;
+        border: 2px solid var(--line-strong);
         border-radius: 999px;
         padding: 14px 18px;
         font: inherit;
         font-weight: 700;
         font-size: 1rem;
-        color: #052e25;
-        background: linear-gradient(135deg, var(--accent), #fde68a);
+        color: var(--text);
+        background: var(--surface-strong);
         cursor: pointer;
-        transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
-        box-shadow: 0 18px 30px rgba(251, 191, 36, 0.28);
+        transition: all 180ms ease;
       }
 
-      button:hover {
+      .option-btn:hover {
+        border-color: var(--primary);
+        background: rgba(5, 150, 105, 0.06);
         transform: translateY(-2px);
-        filter: brightness(1.02);
       }
 
-      button:active {
+      .option-btn:active {
         transform: translateY(0);
       }
 
-      .tips {
-        margin-top: 12px;
-        min-height: 1.4em;
-        color: var(--danger);
-        font-size: 0.94rem;
-        font-weight: 700;
+      .option-btn.believe {
+        border-color: var(--primary);
+        color: var(--primary-strong);
       }
 
-      .note {
-        margin-top: 18px;
-        padding-top: 18px;
-        border-top: 1px solid rgba(6, 78, 59, 0.1);
-        color: var(--muted);
-        font-size: 0.92rem;
-        line-height: 1.7;
+      .option-btn.disbelieve {
+        border-color: var(--accent);
+        color: #92400e;
       }
 
-      .note strong {
-        color: var(--text);
+      .option-btn.disbelieve:hover {
+        background: rgba(251, 191, 36, 0.1);
+        border-color: var(--accent);
       }
 
       @keyframes rise-in {
@@ -287,79 +261,51 @@
   <body>
     <div class="shell">
       <section class="hero" aria-label="页面介绍">
-        <span class="eyebrow">SBTI-Pro 快速测试</span>
-        <h1>输入信息，马上查看你的测试结果。</h1>
+        <span class="eyebrow">SBTI-Pro 灵魂拷问</span>
+        <h1>在看到答案之前，先回答一个问题。</h1>
         <p class="lead">
-          这是一个轻松的娱乐向测试页面。填写名字和年龄后，就能进入结果页查看属于你的专属结论。
+          你的答案没有对错之分，但它会影响最终呈现给你的结果风格。认真思考后再选择吧。
         </p>
         <ul class="highlights">
           <li>
-            <strong>30 秒</strong>
-            <span>只需填写基础信息，就能快速进入结果页。</span>
+            <strong>真诚作答</strong>
+            <span>选择你最真实的想法，不需要迎合任何预期。</span>
           </li>
           <li>
-            <strong>即时生成</strong>
-            <span>提交后立即查看结果，不需要等待。</span>
+            <strong>影响结果</strong>
+            <span>你的回答会决定结果页展示的文案风格。</span>
           </li>
           <li>
-            <strong>轻松体验</strong>
-            <span>页面简洁直接，手机和电脑上都能顺畅使用。</span>
+            <strong>独立思考</strong>
+            <span>不被外界定义，才是有趣的灵魂。</span>
           </li>
         </ul>
       </section>
 
       <main class="panel">
-        <h2>开始测试</h2>
-        <p class="panel-intro">先填写下面的信息，接着就可以进入结果页查看本次测试结论。</p>
-        <form id="test-form" novalidate>
-          <div class="field">
-            <label for="name">你的名字</label>
-            <input id="name" name="name" type="text" placeholder="例如：小明" autocomplete="name" />
-          </div>
-          <div class="field">
-            <label for="age">你的年龄</label>
-            <input
-              id="age"
-              name="age"
-              type="number"
-              min="1"
-              max="120"
-              placeholder="例如：23"
-              inputmode="numeric"
-            />
-          </div>
-          <button type="submit">开始测试</button>
-          <div id="tips" class="tips" role="status" aria-live="polite"></div>
-        </form>
-        <p class="note"><strong>说明：</strong>你的姓名和年龄只会用于当前页面展示，不会被额外保存。</p>
+        <h2>最后确认</h2>
+        <p class="panel-intro">这是正式测试前的最后一个问题，请认真作答。</p>
+        <p class="question">你相信 SBTI 测试可以反应你的人格吗？</p>
+        <div class="options">
+          <button class="option-btn believe" id="believe-btn">相信</button>
+          <button class="option-btn disbelieve" id="disbelieve-btn">不相信</button>
+        </div>
       </main>
     </div>
 
     <script>
-      const form = document.getElementById("test-form");
-      const nameInput = document.getElementById("name");
-      const ageInput = document.getElementById("age");
-      const tips = document.getElementById("tips");
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get("name") || "";
+      const age = params.get("age") || "";
 
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const name = nameInput.value.trim();
-        const age = ageInput.value.trim();
+      document.getElementById("believe-btn").addEventListener("click", () => {
+        const newParams = new URLSearchParams({ name, age, belief: "believe" });
+        window.location.href = "./result.html?" + newParams.toString();
+      });
 
-        if (!name) {
-          tips.textContent = "请先输入你的名字。";
-          nameInput.focus();
-          return;
-        }
-
-        if (!age || Number.isNaN(Number(age))) {
-          tips.textContent = "请输入有效的年龄数字。";
-          ageInput.focus();
-          return;
-        }
-
-        const params = new URLSearchParams({ name, age });
-        window.location.href = "./question.html?" + params.toString();
+      document.getElementById("disbelieve-btn").addEventListener("click", () => {
+        const newParams = new URLSearchParams({ name, age, belief: "disbelieve" });
+        window.location.href = "./result.html?" + newParams.toString();
       });
     </script>
   </body>

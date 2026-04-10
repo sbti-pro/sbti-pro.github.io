@@ -302,6 +302,7 @@
       const params = new URLSearchParams(window.location.search);
       const name = (params.get("name") || "").trim();
       const age = (params.get("age") || "").trim();
+      const belief = params.get("belief") || "believe";
 
       const nameEl = document.getElementById("name");
       const descriptionEl = document.getElementById("description");
@@ -317,10 +318,19 @@
         ageChipEl.textContent = "缺少年龄信息";
       } else {
         nameEl.textContent = name;
-        descriptionEl.textContent =
-          "看起来你有点没有主见，总在等待被定义。SBTI-Pro 鉴定：纯纯的随波逐流型。";
-        insightTextEl.textContent =
-          "你的结果更像那种先观察、再跟着氛围走的人，习惯看清周围反应之后再表达自己的立场。";
+
+        if (belief === "disbelieve") {
+          descriptionEl.textContent =
+            "你不相信测试能定义你，这本身就是一种人格。SBTI-Pro 鉴定：你是一个拥有独立思考逻辑的有趣灵魂。";
+          insightTextEl.textContent =
+            "你有自己的判断标准，不会轻易被外界贴标签。你的自信来源于对自我的深刻认知，而不是外界的评价体系。";
+        } else {
+          descriptionEl.textContent =
+            "看起来你有点没有主见，总在等待被定义。SBTI-Pro 鉴定：纯纯的随波逐流型。";
+          insightTextEl.textContent =
+            "你的结果更像那种先观察、再跟着氛围走的人，习惯看清周围反应之后再表达自己的立场。";
+        }
+
         metaEl.textContent = age ? "登记年龄：" + age + " 岁（仅用于展示）" : "未填写年龄，结果仍可正常查看。";
         ageChipEl.textContent = age ? "年龄 " + age + " 岁" : "未填写年龄";
       }
